@@ -57,8 +57,6 @@ The string passed to DENTER is the name that the library thinks your function is
 
 We advice you to try to place the ```DENTER``` on the first line of the function, as the line above the ```DENTER```-statement is marked as the function's location in the source file.
 
-Alternatively, if you don't want to use a return statement, you can also use ```DLEAVE``` to pop the function from the stacktrace but not return yet. It can thus be used for void-functions (although you can also use ```DRETURN``` without value).
-
 ### Logging
 Another useful feature, that goes hand-in-hand with the stacktracing, is logging. The debugger allows you to log any string to the terminal, accompanied by some _severity value_ that lets the debugger add some extra information (see below). If you want to print non-string values, we recommend casting one of them to a ```std::string```, and using that to combine values together (also look at ```std::to_string```).
 
@@ -104,8 +102,8 @@ int main() {
         DRETURN -1;
     } catch (std::exception& e) {
         // A nice thing of having a toplevel try/catch is that we can re-throw any standard exception
-        try { DLOG(fatal, e.what()); }
-        catch (CppDebugger::Exception& e) { DRETURN -1; }
+        DLOG(nonfatal, e.what());
+        DRETURN -1;
     }
 
     // If no exceptions occurred, we end up here, where we return using the debugger's return to pop main correctly.

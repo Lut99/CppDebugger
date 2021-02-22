@@ -63,7 +63,7 @@ Debugger::Debugger() :
     auxillary_msg("          "),
     info_msg(this->colour_enabled ? "[" BOLD "  LOG  " RESET "] " : "[  LOG  ] "),
     warning_msg(this->colour_enabled ? "[" YELLOW "WARNING" RESET "] " : "[WARNING] "),
-    nonfatal_msg(this->colour_enabled ? "[" RED "FAILURE" RESET "] " : "[FAILURE] "),
+    nonfatal_msg(this->colour_enabled ? "[" RED " ERROR " RESET "] " : "[ ERROR ] "),
     fatal_msg(this->colour_enabled ? "[" RED REVERSED " ERROR " RESET "] " : "[ ERROR ] "),
     vulkan_warning_msg(this->colour_enabled ? "[" YELLOW "VK WARN" RESET "] " : "[VK WARN] "),
     vulkan_error_msg(this->colour_enabled ? "[" RED "VKERROR" RESET "] " : "[VKERROR] "),
@@ -321,6 +321,7 @@ void Debugger::start(const std::string& thread_name) {
         (*iter).second = thread_name;
     } else {
         // It doesn't; insert it
+        std::unique_lock<std::mutex> _start_lock(this->lock);
         this->thread_names.insert(std::make_pair(std::this_thread::get_id(), thread_name));
     }
 }
@@ -373,13 +374,14 @@ void Debugger::unmute(const std::string& function_name) {
 /* Increases indents. Useful for when a helper function is called, for example. */
 void Debugger::indent() {
     // Simply add one to the value
-    ++this->indent_level; 
+    ++this->indent_level[std::this_thread::get_id()]; 
 }
 
 /* Decreases indents. */
 void Debugger::dedent() {
     // Subtract one from the value, but make sure it's bounded to not go below zero and overflow
-    this->indent_level = (this->indent_level > 0 ? this->indent_level - 1 : 0); 
+    std::thread::id tid = std::this_thread::get_id();
+    this->indent_level[tid] = (this->indent_level[tid] > 0 ? this->indent_level[tid] - 1 : 0); 
 }
 
 

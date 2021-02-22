@@ -25,7 +25,6 @@
 #include <string>
 #include <vector>
 #include <unordered_map>
-#include <atomic>
 #include <mutex>
 #include <thread>
 
@@ -176,6 +175,8 @@ namespace CppDebugger {
         std::unordered_map<std::thread::id, std::vector<Frame>> stack;
         /* List of currently muted functions. */
         std::unordered_map<std::thread::id, std::vector<std::string>> muted;
+        /* Indents for each of the threads. */
+        std::unordered_map<std::thread::id, size_t> indent_level;
 
         /* Flags if the current terminal supports color codes. */
         bool colour_enabled;
@@ -195,9 +196,6 @@ namespace CppDebugger {
         const std::string vulkan_error_msg;
         /* The string that will be appended to reset all colours. */
         const std::string reset_msg;
-
-        /* The current number of indents specified. */
-        std::atomic<size_t> indent_level;
 
         /* Lock used to make the Debugger thread-safe. */
         std::mutex lock;
