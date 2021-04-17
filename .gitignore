@@ -33,3 +33,4 @@
 
 # Anything compilery
 build/*
+tests/build/*

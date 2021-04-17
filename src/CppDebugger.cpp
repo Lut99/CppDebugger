@@ -76,7 +76,7 @@ Debugger::Debugger() :
 /* Prints a given string over multiple lines, pasting n spaces in front of each one and linewrapping on the target width. Optionally, a starting x can be specified. */
 void Debugger::print_linewrapped(std::ostream& os, size_t& x, size_t width, const std::string& message) {
     // Get the string to be pasted in front of every new line
-    std::string prefix = std::string(Debugger::prefix_size + this->indent_level * Debugger::indent_size, ' ');
+    std::string prefix = std::string(Debugger::prefix_size + this->indent_level[std::this_thread::get_id()] * Debugger::indent_size, ' ');
     // Loop to print each character
     bool ignoring = false;
     for (size_t i = 0; i < message.size(); i++) {
@@ -127,8 +127,8 @@ void Debugger::_log(std::ostream& os, Severity severity, const std::string& mess
 
                 // Otherwise, we're clear to print the message
                 size_t x = 0;
-                size_t width = max_line_width - Debugger::prefix_size - this->indent_level * Debugger::indent_size;
-                os << std::string(this->indent_level * Debugger::indent_size, ' ') << auxillary_msg;
+                size_t width = max_line_width - Debugger::prefix_size - this->indent_level[tid] * Debugger::indent_size;
+                os << auxillary_msg << std::string(this->indent_level[tid] * Debugger::indent_size, ' ');
                 this->print_linewrapped(os, x, width, message);
                 os << reset_msg << std::endl;
                 return;
@@ -149,8 +149,8 @@ void Debugger::_log(std::ostream& os, Severity severity, const std::string& mess
 
                 // Otherwise, we're clear to print the message
                 size_t x = 0;
-                size_t width = max_line_width - Debugger::prefix_size - this->indent_level * Debugger::indent_size;
-                os << std::string(this->indent_level * Debugger::indent_size, ' ') << info_msg;
+                size_t width = max_line_width - Debugger::prefix_size - this->indent_level[tid] * Debugger::indent_size;
+                os << info_msg << std::string(this->indent_level[tid] * Debugger::indent_size, ' ');
                 this->print_linewrapped(os, x, width, message);
                 os << reset_msg << std::endl;
                 return;
@@ -171,16 +171,16 @@ void Debugger::_log(std::ostream& os, Severity severity, const std::string& mess
 
                 // Print the new message as normal
                 size_t x = 0;
-                size_t width = max_line_width - Debugger::prefix_size - this->indent_level * Debugger::indent_size;
-                os << std::string(this->indent_level * Debugger::indent_size, ' ') << warning_msg;
+                size_t width = max_line_width - Debugger::prefix_size - this->indent_level[tid] * Debugger::indent_size;
+                os << warning_msg << std::string(this->indent_level[tid] * Debugger::indent_size, ' ');
                 this->print_linewrapped(os, x, width, message);
                 os << reset_msg << std::endl;
 
                 // If there is a stack, display the stack message
-                if (this->stack.size() > 0) {
+                if (this->stack[tid].size() > 0) {
                     Frame f = this->stack[tid][this->stack[tid].size() - 1];
                     std::string to_print = "[in function '\033[1m" + f.func_name + "\033[0m' at \033[1m" + f.file_name + ':' + std::to_string(f.line_number) + "\033[0m]";
-                    os << std::string(Debugger::prefix_size + this->indent_level * Debugger::indent_size, ' ');
+                    os << std::string(Debugger::prefix_size + this->indent_level[tid] * Debugger::indent_size, ' ');
                     x = 0;
                     this->print_linewrapped(os, x, width, to_print);
                     os << reset_msg << std::endl;
@@ -202,7 +202,7 @@ void Debugger::_log(std::ostream& os, Severity severity, const std::string& mess
                 std::string prefix_indent = std::string(Debugger::prefix_size, ' ');
                 if (this->stack.size() > 0) {
                     os << prefix_indent << "\033[1mStacktrace:\033[0m" << std::endl;
-                    for (size_t i = 0; i < this->stack.size(); i++) {
+                    for (size_t i = 0; i < this->stack[tid].size(); i++) {
                         x = 0;
                         Frame f = this->stack[tid][this->stack[tid].size() - 1 - i];
                         std::string prefix = i == 0 ? "in" : "from";
@@ -229,7 +229,7 @@ void Debugger::_log(std::ostream& os, Severity severity, const std::string& mess
                 std::string prefix_indent = std::string(Debugger::prefix_size, ' ');
                 if (this->stack.size() > 0) {
                     os << prefix_indent << "\033[1mStacktrace:\033[0m" << std::endl;
-                    for (size_t i = 0; i < this->stack.size(); i++) {
+                    for (size_t i = 0; i < this->stack[tid].size(); i++) {
                         x = 0;
                         Frame f = this->stack[tid][this->stack[tid].size() - 1 - i];
                         std::string prefix = i == 0 ? "in" : "from";
@@ -259,16 +259,16 @@ void Debugger::_log(std::ostream& os, Severity severity, const std::string& mess
 
                 // Print the new message as normal
                 size_t x = 0;
-                size_t width = max_line_width - Debugger::prefix_size - this->indent_level * Debugger::indent_size;
-                os << std::string(this->indent_level * Debugger::indent_size, ' ') << vulkan_warning_msg;
+                size_t width = max_line_width - Debugger::prefix_size - this->indent_level[tid] * Debugger::indent_size;
+                os << vulkan_warning_msg << std::string(this->indent_level[tid] * Debugger::indent_size, ' ');
                 this->print_linewrapped(os, x, width, message);
                 os << reset_msg << std::endl;
 
                 // If there is a stack, display the stack message
-                if (this->stack.size() > 0) {
+                if (this->stack[tid].size() > 0) {
                     Frame f = this->stack[tid][this->stack[tid].size() - 1];
                     std::string to_print = "[in function '\033[1m" + f.func_name + "\033[0m' at \033[1m" + f.file_name + ':' + std::to_string(f.line_number) + "\033[0m]";
-                    os << std::string(Debugger::prefix_size + this->indent_level * Debugger::indent_size, ' ');
+                    os << std::string(Debugger::prefix_size + this->indent_level[tid] * Debugger::indent_size, ' ');
                     x = 0;
                     this->print_linewrapped(os, x, width, to_print);
                     os << reset_msg << std::endl;
@@ -290,7 +290,7 @@ void Debugger::_log(std::ostream& os, Severity severity, const std::string& mess
                 std::string prefix_indent = std::string(Debugger::prefix_size, ' ');
                 if (this->stack.size() > 0) {
                     os << prefix_indent << "\033[1mStacktrace:\033[0m" << std::endl;
-                    for (size_t i = 0; i < this->stack.size(); i++) {
+                    for (size_t i = 0; i < this->stack[tid].size(); i++) {
                         x = 0;
                         Frame f = this->stack[tid][this->stack[tid].size() - 1 - i];
                         std::string prefix = i == 0 ? "in" : "from";
@@ -335,6 +335,14 @@ void Debugger::push(const std::string& function_name, const std::string& file_na
 
     // Push it on the stack
     this->stack[std::this_thread::get_id()].push_back(frame);
+
+    // Print the stack
+    std::cout << "[";
+    for (size_t i = 0; i < this->stack[std::this_thread::get_id()].size(); i++) {
+        if (i > 0) { std::cout << ", "; }
+        std::cout << this->stack[std::this_thread::get_id()][i].func_name;
+    }
+    std::cout << "]" << std::endl;
 }
 
 /* pops the top function name of the stack. */
