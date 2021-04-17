@@ -335,14 +335,6 @@ void Debugger::push(const std::string& function_name, const std::string& file_na
 
     // Push it on the stack
     this->stack[std::this_thread::get_id()].push_back(frame);
-
-    // Print the stack
-    std::cout << "[";
-    for (size_t i = 0; i < this->stack[std::this_thread::get_id()].size(); i++) {
-        if (i > 0) { std::cout << ", "; }
-        std::cout << this->stack[std::this_thread::get_id()][i].func_name;
-    }
-    std::cout << "]" << std::endl;
 }
 
 /* pops the top function name of the stack. */
