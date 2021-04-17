@@ -71,7 +71,7 @@ DLOG(CppDebugger::Severity::warning, "A warning has occurred!");
 // The 'fatal'-severity value
 DLOG(CppDebugger::Severity::fatal, "A non-recoverable message has occurred!");
 ```
-Note that, while info and warning won't print anything if the debugger is disabled, fatal will simply be throwing the exception it would otherwise throw to make sure your code terminates.
+Note that, while info and warning won't print anything if the debugger is disabled, (non)fatal will still print the error message and exit() your application if applicable.
 
 To make your life easier, you can also import the severity values in the toplevel namespace:
 ```c++
@@ -97,7 +97,7 @@ int main() {
         DLOG(info, "Hello, world!");
         DLOG(warning, "Uh-oh, world!");
         DLOG(fatal, "That went wrong, world!");
-    } catch (CppDebugger::Exception& e) {
+    } catch (CppDebugger::Fatal& e) {
         // Return that it failed
         DRETURN -1;
     } catch (std::exception& e) {
