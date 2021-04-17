@@ -1,7 +1,7 @@
 # CppDebugger
 Simple debugging library that can be used to get more sophisticated debugging information in C++ when enabled, like stack traces and pretty logging.
 
-Below you'll find a quick start guide, moving you through installing, using and then linking the library. For more in-depth information, visit the [wiki]().
+Below you'll find a quick start guide, moving you through installing, using and then linking the library. For more in-depth information, visit the [wiki](https://github.com/Lut99/CppDebugger/wiki).
 
 ## Installation
 To install the library on your computer, first make sure you have cmake and git installed.
@@ -53,7 +53,7 @@ int example_return_function() {
     DRETURN 0;
 }
 ```
-The string passed to DENTER is the name that the library thinks your function is called. While it's usually best to make this your function header/function name, you can get creative and name it how you like. It is recommended to make the names unique, though (some functions use these names as unique id's: see [here](), for example).
+The string passed to DENTER is the name that the library thinks your function is called. While it's usually best to make this your function header/function name, you can get creative and name it how you like. It is recommended to make the names unique, though (some functions use these names as unique id's).
 
 We advice you to try to place the ```DENTER``` on the first line of the function, as the line above the ```DENTER```-statement is marked as the function's location in the source file.
 
@@ -132,7 +132,7 @@ target_link_libraries(foo PUBLIC debug cppdbg)
 ```
 We recommend to add the library with the 'debug' keyword, so CMake only links it when ```CMAKE_BUILD_TYPE=Debug``` and not when ```CMAKE_BUILD_TYPE=Release```. Similarly, CMake also takes care of settings ```-DNDEBUG``` for you based on the build type.
 
-With that, you should successfully be able to use the most-used features of the debugger. However, for more advanced or specific uses, such as using the application for multiple threads, please check out our [wiki]().
+With that, you should successfully be able to use the most-used features of the debugger. However, for more advanced or specific uses, such as using the application for multiple threads, please check out our [wiki](https://github.com/Lut99/CppDebugger/wiki).
 
 ## Bug reporting
 If you encounter any bugs, please leave an issue here on Github with the appropriate tags. Similarly, if you have a suggestion or something that you think doesn't work, let us know via an issue too.
