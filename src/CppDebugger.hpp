@@ -110,11 +110,11 @@
 /* Logs using the debugger. */
 #define DLOG(SEVERITY, MESSAGE) \
     if ((SEVERITY) == CppDebugger::Severity::nonfatal) { std::cerr << (MESSAGE) << std::endl; } \
-    else if ((SEVERITY) == CppDebugger::Severity::fatal) { std::cerr << (MESSAGE) << std::endl; exit(EXIT_FAILURE); }
+    else if ((SEVERITY) == CppDebugger::Severity::fatal) { std::cerr << (MESSAGE) << std::endl; throw CppDebugger::Fatal((MESSAGE)); }
 /* Logs using the debugger with extra indent. */
 #define DLOGi(SEVERITY, MESSAGE, INDENT) \
     if ((SEVERITY) == CppDebugger::Severity::nonfatal) { std::cerr << (MESSAGE) << std::endl; } \
-    else if ((SEVERITY) == CppDebugger::Severity::fatal) { std::cerr << (MESSAGE) << std::endl; exit(EXIT_FAILURE); }
+    else if ((SEVERITY) == CppDebugger::Severity::fatal) { std::cerr << (MESSAGE) << std::endl; throw CppDebugger::Fatal((MESSAGE)); }
 
 #endif
 
