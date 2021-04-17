@@ -144,6 +144,23 @@ namespace CppDebugger {
 
 
 
+    /* Exception that is thrown whenever a fatal message is logged. Derives from the standard std::exception class. */
+    class Fatal: public std::exception {
+    public:
+        /* The message passed to the fatal error message. */
+        std::string message;
+
+        /* Constructor for the Fatal exception, which takes a message describing what happened. */
+        Fatal(const std::string& message):
+            message(message)
+        {}
+
+        /* Overload of the what() function, which is used to pretty-print the message. */
+        const char* what() const noexcept { return this->message.c_str(); }
+    };
+
+
+
     #ifndef NDEBUG
     
     /* Struct used to refer to a stack frame. */

@@ -4,7 +4,7 @@
  * Created:
  *   2/22/2021, 4:30:58 PM
  * Last edited:
- *   17/04/2021, 16:40:19
+ *   17/04/2021, 17:06:38
  * Auto updated?
  *   Yes
  *
@@ -43,7 +43,7 @@ int main() {
         nested();
         DDEDENT;
         DLOG(fatal, "Jup, it crashed");
-    } catch (std::runtime_error& e) {
+    } catch (CppDebugger::Fatal& e) {
         DRETURN -1;
     }
 

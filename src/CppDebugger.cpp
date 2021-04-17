@@ -241,7 +241,7 @@ void Debugger::_log(std::ostream& os, Severity severity, const std::string& mess
                 }
 
                 // Return by throwing
-                throw std::runtime_error(message);
+                throw CppDebugger::Fatal(message);
             }
         
         case vulkan_warning:
@@ -386,7 +386,7 @@ void Debugger::dedent() {
 
 
 
-/* Logs a message to the debugger. The type of message must be specified, which also determines how the message will be printed. If the the severity is fatal, also throws a std::runtime_error with the same text. To disable that, use Severity::nonfatal otherwise. Finally, one can optionally specify extra levels of indentation to use for this message. */
+/* Logs a message to the debugger. The type of message must be specified, which also determines how the message will be printed. If the the severity is fatal, also throws a CppDebugger::Fatal with the same text. To disable that, use Severity::nonfatal otherwise. Finally, one can optionally specify extra levels of indentation to use for this message. */
 void Debugger::log(Severity severity, const std::string& message, size_t extra_indent) {
     // Write to the correct stream based on the severity
     if (severity == Severity::info || severity == Severity::auxillary) {
